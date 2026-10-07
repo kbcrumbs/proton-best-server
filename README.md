@@ -40,6 +40,7 @@ python proton_best_server.py --country SG    # another exit country
 python proton_best_server.py --include-free --include-secure-core
 python proton_best_server.py --pings 10 --top 15
 python proton_best_server.py --force         # measure even while connected
+python proton_best_server.py --copy          # put the best server name on the clipboard
 python proton_best_server.py --no-pause      # skip "Press Enter" (for scripting)
 ```
 
@@ -56,7 +57,22 @@ All options:
 | `--top` | 20 | Rows to print |
 | `--max-load` | 80 | Ignore nodes above this load % for the recommendation |
 | `--force` | off | Run even if a VPN tunnel is up |
+| `--copy` | off | Copy the recommended server name to the clipboard |
 | `--no-pause` | off | Do not wait for Enter before exiting |
+
+### Desktop shortcut
+
+For a one-click version, make a shortcut whose target is:
+
+```
+"C:\Path\To\python.exe" "C:\Path\To\proton_best_server.py" --copy
+```
+
+Double-clicking it opens a console, ranks the servers, copies the best name to
+the clipboard, and waits for Enter. Then open Proton VPN, click the search
+box, press Ctrl+V and connect. The Proton client executable makes a good icon
+source. Remember to disconnect the VPN before clicking, or the script will
+stop and say so.
 
 ## Example output
 

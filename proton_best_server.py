@@ -18,6 +18,7 @@ Usage:
   python proton_best_server.py --include-free --include-secure-core
   python proton_best_server.py --pings 10 --top 15
   python proton_best_server.py --force         # test even while the VPN is connected
+  python proton_best_server.py --copy          # also put the best server name on the clipboard
 """
 import argparse
 import glob
@@ -181,6 +182,14 @@ def ping(ip, count, timeout_ms):
     return empty
 
 
+def copy_to_clipboard(text):
+    try:
+        subprocess.run(["clip"], input=text, text=True, check=True, timeout=5)
+        return True
+    except Exception:
+        return False
+
+
 def _ms(v):
     return "%4dms" % v if v is not None else "   --"
 
@@ -214,6 +223,8 @@ def main():
     ap.add_argument("--max-load", type=int, default=80,
                     help="ignore nodes above this load percent for the recommendation (default 80)")
     ap.add_argument("--force", action="store_true", help="run even if a VPN tunnel is up")
+    ap.add_argument("--copy", action="store_true",
+                    help="copy the recommended server name to the clipboard")
     ap.add_argument("--no-pause", action="store_true",
                     help="do not wait for Enter before exiting (for use from scripts)")
     args = ap.parse_args()
@@ -299,7 +310,11 @@ def main():
             names[0], best["city"], best["ip"], best["avg"], best["load"]))
         if len(names) > 1:
             print("  Same physical node, so any of these is equivalent: " + ", ".join(names))
-        print("  In the Proton VPN app, search for that server name and connect to it.")
+        if args.copy and copy_to_clipboard(names[0]):
+            print("\n  >>> %s is now on your clipboard. <<<" % names[0])
+            print("  Open Proton VPN, click the search box, press Ctrl+V, then Connect.")
+        else:
+            print("  In the Proton VPN app, search for that server name and connect to it.")
     else:
         print("\nNo node answered all pings under the load limit; try --max-load 100 or more --pings.")
 
