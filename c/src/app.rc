@@ -1,0 +1,58 @@
+#include <windows.h>
+#include <commctrl.h>
+#include "resource.h"
+
+1 RT_MANIFEST "app.manifest"
+
+IDD_MAIN DIALOGEX 0, 0, 500, 340
+STYLE DS_SETFONT | DS_CENTER | WS_OVERLAPPEDWINDOW | WS_VISIBLE
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "Proton VPN Tools"
+FONT 9, "Segoe UI", 400, 0, 1
+BEGIN
+    CONTROL "", IDC_TAB, WC_TABCONTROL, WS_TABSTOP | WS_CLIPSIBLINGS, 4, 4, 492, 332
+END
+
+IDD_PAGE_SERVERS DIALOGEX 0, 0, 480, 300
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD | WS_VISIBLE
+FONT 9, "Segoe UI", 400, 0, 1
+BEGIN
+    RTEXT           "Country", -1,            4,  8, 30, 10
+    COMBOBOX        IDC_COUNTRY,             38,  6, 44, 120, CBS_DROPDOWN | CBS_SORT | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    RTEXT           "Pings", -1,             88,  8, 24, 10
+    EDITTEXT        IDC_PINGS,              116,  6, 24, 12, ES_NUMBER | ES_RIGHT
+    RTEXT           "Timeout ms", -1,       146,  8, 40, 10
+    EDITTEXT        IDC_TIMEOUT,            190,  6, 30, 12, ES_NUMBER | ES_RIGHT
+    RTEXT           "Max load %", -1,       226,  8, 40, 10
+    EDITTEXT        IDC_MAXLOAD,            270,  6, 24, 12, ES_NUMBER | ES_RIGHT
+    DEFPUSHBUTTON   "Run", IDC_RUN,         426,  5, 50, 14
+
+    AUTOCHECKBOX    "Include Free", IDC_FREE,                 38, 24, 56, 10
+    AUTOCHECKBOX    "Include Secure Core", IDC_SECURECORE,   100, 24, 80, 10
+    AUTOCHECKBOX    "Force (run even if VPN is connected)", IDC_FORCE, 188, 24, 140, 10
+    PUSHBUTTON      "Copy best", IDC_COPY,  426, 22, 50, 14, WS_DISABLED
+
+    CONTROL         "", IDC_LIST, WC_LISTVIEW, LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | WS_BORDER | WS_TABSTOP, 4, 40, 472, 232
+    LTEXT           "", IDC_RECOMMEND,        4, 276, 472, 10
+    LTEXT           "", IDC_STATUS,           4, 288, 472, 10
+END
+
+IDD_PAGE_CHECK DIALOGEX 0, 0, 480, 300
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD | WS_VISIBLE
+FONT 9, "Segoe UI", 400, 0, 1
+BEGIN
+    RTEXT           "Pings per host", -1,     4,  8, 50, 10
+    EDITTEXT        IDC_CPINGS,              58,  6, 24, 12, ES_NUMBER | ES_RIGHT
+    RTEXT           "Streams", -1,           88,  8, 30, 10
+    EDITTEXT        IDC_STREAMS,            122,  6, 24, 12, ES_NUMBER | ES_RIGHT
+    AUTOCHECKBOX    "Skip download/upload test", IDC_NOSPEED, 156, 7, 110, 10
+    DEFPUSHBUTTON   "Run", IDC_CRUN,        426,  5, 50, 14
+
+    RTEXT           "Compare with", -1,       4, 25, 50, 10
+    EDITTEXT        IDC_COMPARE,             58, 23, 300, 12, ES_AUTOHSCROLL
+    PUSHBUTTON      "Browse...", IDC_BROWSE, 362, 22, 40, 14
+    PUSHBUTTON      "Save JSON...", IDC_SAVEJSON, 426, 22, 50, 14, WS_DISABLED
+
+    EDITTEXT        IDC_OUTPUT,               4, 40, 472, 244, ES_MULTILINE | ES_READONLY | ES_AUTOVSCROLL | WS_VSCROLL | WS_HSCROLL | ES_AUTOHSCROLL
+    LTEXT           "", IDC_CSTATUS,          4, 288, 472, 10
+END

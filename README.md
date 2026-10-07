@@ -7,6 +7,7 @@ third-party packages. Python 3.8+.
 |---|---|
 | `proton_best_server.py` | Ranks the servers in a country by ping latency, from the Windows client's cached server list |
 | `vpn_check.py` | Checks the connection you are on: exit location, IPv6 and DNS leaks, latency, download and upload |
+| `c/` | Both tools as one native Win32 GUI exe, about 190 KB, no Python required. See the end of this file |
 
 ---
 
@@ -199,6 +200,51 @@ python vpn_check.py --compare off.json         # after connecting
   single-stream one. Treat the better of the two as a floor for your real
   download speed, not a ceiling.
 - Windows only for the same reasons as the server ranker.
+
+---
+
+# protonvpn-tools.exe (native C version)
+
+Both tools in one small Win32 program, no Python needed. One window, two
+tabs: **Best server** and **Connection check**. Source is in `c/`, about
+190 KB when built, nothing to install alongside it.
+
+## Building
+
+Needs Visual Studio with the C++ build tools (the free Community edition is
+fine). From any prompt:
+
+```
+c\build.bat
+```
+
+The script finds Visual Studio through `vswhere`, compiles with `cl` and
+leaves `c\build\protonvpn-tools.exe`. Only Windows system libraries are
+linked: `iphlpapi` for ICMP and adapters, `winhttp` for the HTTP tests,
+`comctl32` and `comdlg32` for the UI.
+
+## What is different from the scripts
+
+- **No ping.exe, no PowerShell.** Pings use `IcmpSendEcho` directly (no
+  administrator rights needed), adapters and DNS come from
+  `GetAdaptersAddresses`, and the clipboard is written through the Win32
+  clipboard API.
+- **Pings are interleaved, not parallel.** Windows loses a large share of
+  echo replies when several are in flight from one process at once, however
+  it is arranged (one handle per thread, a shared handle, async
+  `IcmpSendEcho2`, even serialized with a mutex all lost 20 to 50% through a
+  WireGuard tunnel in testing), while one thread cycling over the same hosts
+  lost none. So the exe sends one echo at a time, round-robin across all
+  nodes, 100 ms apart. A country with 10 nodes and 5 pings takes a few
+  seconds; a large country with 60 nodes takes about half a minute.
+- **The country list is a dropdown** filled from the cached server list, and
+  the results table is a real list view. Double-click any row to copy that
+  server name; **Copy best** copies the recommendation.
+- **Save JSON** and **Compare with** on the Connection check tab read and
+  write the same JSON format as `vpn_check.py`, so a baseline saved by one can
+  be compared by the other.
+- The download and upload tests still run several HTTP streams in parallel;
+  that limitation is specific to ICMP.
 
 ## License
 
